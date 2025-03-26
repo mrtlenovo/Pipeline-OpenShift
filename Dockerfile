@@ -1,7 +1,7 @@
 FROM node:16-alpine
 WORKDIR /app
-COPY run-smoke-tests.sh /app/run-smoke-tests.sh
-RUN chmod +x run-smoke-tests.sh
+COPY . .
+RUN chmod +x ./run-smoke-tests.sh  # Grant executable permission to the script
 RUN npm install
 CMD ["npm", "start"]
 EXPOSE 3000

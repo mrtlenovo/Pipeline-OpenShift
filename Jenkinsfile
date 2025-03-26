@@ -4,7 +4,7 @@ pipeline {
     environment {
         OCP_SERVER = 'https://api.ocptest.demo.local:6443'
         OCP_TOKEN = credentials('ocp-external-token')  // Using the token credential
-        MAIL_RECIPIENTS = 'developer@example.com'  // Developer's Outlook email
+        MAIL_RECIPIENTS = 'mtripathy@lenovo.com'  // Developer's Outlook email
     }
 
     stages {

@@ -9,7 +9,8 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/mrtlenovo/Pipeline-OpenShift.git'
+                // Specify branch explicitly to avoid issues
+                git branch: 'main', url: 'https://github.com/mrtlenovo/Pipeline-OpenShift.git'
             }
         }
 

@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://gitlab.com/your-repo.git'
+                git 'https://github.com/mrtlenovo/Pipeline-OpenShift.git'
             }
         }
 

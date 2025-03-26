@@ -9,7 +9,6 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Specify branch explicitly to avoid issues
                 git branch: 'main', url: 'https://github.com/mrtlenovo/Pipeline-OpenShift.git'
             }
         }
@@ -35,7 +34,16 @@ pipeline {
 
         stage('Smoke Tests') {
             steps {
-                sh "oc run smoke-test --image=my-app --command -- ./run-smoke-tests.sh"
+                sh """
+                # Delete any existing smoke-test pod to avoid name conflicts
+                oc delete pod smoke-test --ignore-not-found
+                # Run smoke tests using the internal image from OpenShift ImageStream
+                oc run smoke-test --image=image-registry.openshift-image-registry.svc:5000/cicd-prod/my-app --restart=Never --command -- ./run-smoke-tests.sh
+                # Wait for the pod to become ready
+                oc wait --for=condition=Ready pod/smoke-test --timeout=60s
+                # Print logs of the smoke-test pod
+                oc logs smoke-test
+                """
             }
         }
     }

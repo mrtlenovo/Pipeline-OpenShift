@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://gitlab.com/your-repo.git'
+                git 'https://github.com/mrtlenovo/Pipeline-OpenShift.git'
             }
         }
 
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 sh """
                 oc login ${OCP_SERVER} --token=${OCP_TOKEN} --insecure-skip-tls-verify
-                oc project cicd-test
+                oc project cicd-prod
                 oc new-build --binary --name=my-app -l app=my-app
                 oc start-build my-app --from-dir=. --follow
                 """

@@ -1,0 +1,38 @@
+name: CI/CD to OpenShift
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  OCP_SERVER: https://api.ocptest.demo.local:6443
+  NAMESPACE: cicd-prod
+  APP_NAME: my-app
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install OpenShift CLI
+      run: |
+        curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz"
+        tar -xzf openshift-client-linux.tar.gz
+        sudo mv oc kubectl /usr/local/bin/
+
+    - name: Login to OpenShift
+      env:
+        OCP_TOKEN: ${{ secrets.OCP_TOKEN }}
+      run: |
+        oc login $OCP_SERVER --token=$OCP_TOKEN --insecure-skip-tls-verify
+        oc project $NAMESPACE
+
+    - name: Start OpenShift Binary Build and Deploy
+      run: |
+        oc new-build --binary --name=$APP_NAME -l app=$APP_NAME || true
+        oc start-build $APP_NAME --from-dir=. --follow
+        oc apply -f deployment.yaml
